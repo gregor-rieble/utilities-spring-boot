@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>utilities-spring-boot-starter</artifactId>
-    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
