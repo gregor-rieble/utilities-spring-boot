@@ -6,7 +6,7 @@
     <parent>
         <groupId>de.gcoding.boot</groupId>
         <artifactId>utilities-spring-boot</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>diagnostics</artifactId>
