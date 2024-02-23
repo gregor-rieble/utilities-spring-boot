@@ -32,9 +32,8 @@ jobs:
 
       - name: Update version in README.md
         run: |
-          CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           for file in $(find ./ -name 'README.md'); do
-            sed -i "s/<version>(.*?)<\/version>/<version>${{ github.event.inputs.releaseVersion }}<\/version>/g" $file
+            sed -i "s/<version>.\+<\/version>/<version>${{ github.event.inputs.releaseVersion }}<\/version>/g" $file
           done
 
       - name: Set release version
