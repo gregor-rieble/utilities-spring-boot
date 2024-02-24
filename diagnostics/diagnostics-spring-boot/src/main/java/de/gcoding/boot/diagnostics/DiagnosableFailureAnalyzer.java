@@ -6,6 +6,10 @@ import org.springframework.core.annotation.AnnotationUtils;
 
 import java.util.Optional;
 
+/**
+ * Looks for an exception implementing {@link DiagnosisDetailsProvider} or annotated with {@link Diagnosable}
+ * in the stack trace to provide details on the startup failure
+ */
 public class DiagnosableFailureAnalyzer implements FailureAnalyzer {
     // protected for changing implementation in tests
     protected DiagnosisDetailsExtractor diagnosisDetailsExtractor = DiagnosableFailureAnalyzer::resolveDiagnosisDetails;

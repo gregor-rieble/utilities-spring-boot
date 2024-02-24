@@ -11,23 +11,8 @@ public final class ExceptionUtils {
     }
 
     /**
-     * Executes the given {@code callable} and catches all exceptions and rethrows them according to the following
-     * rules:
-     *
-     * <ul>
-     *     <li>
-     *         If the caught exception is a {@link RuntimeException}, it is rethrown without modification.
-     *     </li>
-     *     <li>
-     *         If the caught exception is a {@link InterruptedException}, the current thread will be marked as interrupted
-     *         before the exception is rethrown as described below
-     *     </li>
-     *     <li>
-     *         If the caught exception is a checked exception, the exception is wrapped in an {@link IllegalStateException}
-     *         before it is rethrown. The {@link IllegalStateException} will have the same message as the original exception
-     *         and will have the original exception as its cause
-     *     </li>
-     * </ul>
+     * Executes the given {@code callable} and catches all exceptions from the {@code callable} and rethrows them
+     * in an unchecked way by &quot;tricking&quot; the compiler.
      *
      * @param callable The callable to be executed
      * @param <T>      The result type of the callable
@@ -36,13 +21,23 @@ public final class ExceptionUtils {
     public static <T> T sneakyThrows(Callable<T> callable) {
         try {
             return callable.call();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(e.getMessage(), e);
         } catch (Exception e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            rethrowChecked(e);
         }
+        throw new UnreachableCodeException();
+    }
+
+    /**
+     * Same as {@link #sneakyThrows(Callable)} but without the need to return a value within your {@code runnable}.
+     *
+     * @param runnable The runnable to be executed
+     */
+    public static void sneakyThrows(ThrowingRunnable runnable) {
+        runnable.run();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Throwable> void rethrowChecked(Throwable t) throws T {
+        throw (T) t;
     }
 }

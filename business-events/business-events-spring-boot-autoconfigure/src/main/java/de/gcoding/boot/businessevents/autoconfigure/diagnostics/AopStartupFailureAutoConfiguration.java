@@ -37,11 +37,11 @@ public class AopStartupFailureAutoConfiguration {
                 // @formatter:off
                 throw new DiagnosableException(
                     withDescription(AOP_DISABLED_MESSAGE)
-                        .andMultipleOptionsOnHowToSolveTheIssue()
-                        .withOption("Disable the business events aspect by setting " + PROPERTIES_PATH + ".enabled=false " +
+                        .andSuggestedActions()
+                        .of("Disable the business events aspect by setting " + PROPERTIES_PATH + ".enabled=false " +
                             "(Note that this will disable the @EmitBusinessEvent functionality)")
-                        .withOption("Enable AOP by using the @EnableAspectJAutoProxy annotation on one of your configuration classes")
-                        .withOption(this::actionIfAopIsDisabled)
+                        .of("Enable AOP by using the @EnableAspectJAutoProxy annotation on one of your configuration classes")
+                        .of(this::actionIfAopIsDisabled)
                         .build());
                 // @formatter:on
             }
@@ -70,9 +70,9 @@ public class AopStartupFailureAutoConfiguration {
             // @formatter:off
             throw new DiagnosableException(
                 withDescription(AOP_NOT_ON_CLASSPATH_MESSAGE)
-                    .andMultipleOptionsOnHowToSolveTheIssue()
-                        .withOption("Add org.springframework.boot:spring-boot-starter-aop to your dependencies")
-                        .withOption("Add org.springframework:spring-aop to your dependencies and use the @EnableAspectJAutoProxy " +
+                    .andSuggestedActions()
+                        .of("Add org.springframework.boot:spring-boot-starter-aop to your dependencies")
+                        .of("Add org.springframework:spring-aop to your dependencies and use the @EnableAspectJAutoProxy " +
                             "on one of your configuration classes")
                         .build());
             // @formatter:on

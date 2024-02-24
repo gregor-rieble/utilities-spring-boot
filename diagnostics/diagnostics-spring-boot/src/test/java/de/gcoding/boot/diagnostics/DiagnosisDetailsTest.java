@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DiagnosisDetailsTest {
     @Test
     void simpleDiagnosisDetailsCanBeCreatedThroughBuilder() {
-        final var details = DiagnosisDetails.withDescription("description").andActionToSolveTheIssue("action");
+        final var details = DiagnosisDetails.withDescription("description").andSuggestedAction("action");
 
         assertThat(details.description()).isEqualTo("description");
         assertThat(details.action()).isEqualTo("action");
@@ -17,10 +17,10 @@ class DiagnosisDetailsTest {
 
     @Test
     void multipleActionsCanBeAdded() {
-        final var details = DiagnosisDetails.withDescription("description").andMultipleOptionsOnHowToSolveTheIssue()
-            .withOption("first")
-            .withOption(() -> Optional.of("second"))
-            .withOption("third")
+        final var details = DiagnosisDetails.withDescription("description").andSuggestedActions()
+            .of("first")
+            .of(() -> Optional.of("second"))
+            .of("third")
             .build();
 
         assertThat(details.action())
@@ -31,10 +31,10 @@ class DiagnosisDetailsTest {
 
     @Test
     void eachActionIsRenderedInSeparateLine() {
-        final var details = DiagnosisDetails.withDescription("description").andMultipleOptionsOnHowToSolveTheIssue()
-            .withOption("first")
-            .withOption("second")
-            .withOption("third")
+        final var details = DiagnosisDetails.withDescription("description").andSuggestedActions()
+            .of("first")
+            .of("second")
+            .of("third")
             .build();
 
         assertThat(details.action()).hasLineCount(4); // 1 preamble line and 3 actions
@@ -42,10 +42,10 @@ class DiagnosisDetailsTest {
 
     @Test
     void emptyOptionalInMultiActionsIsNotRendered() {
-        final var details = DiagnosisDetails.withDescription("description").andMultipleOptionsOnHowToSolveTheIssue()
-            .withOption("first")
-            .withOption(Optional::empty)
-            .withOption("third")
+        final var details = DiagnosisDetails.withDescription("description").andSuggestedActions()
+            .of("first")
+            .of(Optional::empty)
+            .of("third")
             .build();
 
         assertThat(details.action())
@@ -54,8 +54,8 @@ class DiagnosisDetailsTest {
 
     @Test
     void defaultPreambleLineIsRenderedWhenNotSpecificallySet() {
-        final var details = DiagnosisDetails.withDescription("description").andMultipleOptionsOnHowToSolveTheIssue()
-            .withOption("first")
+        final var details = DiagnosisDetails.withDescription("description").andSuggestedActions()
+            .of("first")
             .build();
 
         assertThat(details.action()).startsWith("You can take the following actions to solve the issue:\n");
@@ -64,10 +64,36 @@ class DiagnosisDetailsTest {
     @Test
     void preambleLineCanBeSetManually() {
         final var details = DiagnosisDetails.withDescription("description")
-            .andMultipleOptionsOnHowToSolveTheIssue("Do the following:")
-            .withOption("first")
+            .andSuggestedActions("Do the following:")
+            .of("first")
             .build();
 
         assertThat(details.action()).startsWith("Do the following:\n");
+    }
+
+    @Test
+    void buildCanBeOmittedWhenUsingAndForTheLastAction() {
+        final var details = DiagnosisDetails.withDescription("description").andSuggestedActions()
+            .of("first")
+            .of(() -> Optional.of("second"))
+            .and("third");
+
+        assertThat(details.action())
+            .matches("(?s).*\\bfirst\\b.*")
+            .matches("(?s).*\\bsecond\\b.*")
+            .matches("(?s).*\\bthird\\b.*");
+    }
+
+    @Test
+    void buildCanBeOmittedWhenUsingAndWithConditionalAvailableActionForTheLastAction() {
+        final var details = DiagnosisDetails.withDescription("description").andSuggestedActions()
+            .of("first")
+            .of(() -> Optional.of("second"))
+            .and(() -> Optional.of("third"));
+
+        assertThat(details.action())
+            .matches("(?s).*\\bfirst\\b.*")
+            .matches("(?s).*\\bsecond\\b.*")
+            .matches("(?s).*\\bthird\\b.*");
     }
 }
