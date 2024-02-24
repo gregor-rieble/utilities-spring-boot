@@ -5,27 +5,25 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.gcoding.boot</groupId>
-        <artifactId>utilities-spring-boot</artifactId>
+        <artifactId>database</artifactId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>utilities-spring-boot-starter</artifactId>
+    <artifactId>database-spring-boot-starter</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>diagnostics-spring-boot-starter</artifactId>
+            <artifactId>database-spring-boot-autoconfigure</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>business-events-spring-boot-starter</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>database-spring-boot-starter</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -44,6 +44,7 @@
         <module>commons</module>
         <module>utilities-spring-boot-starter</module>
         <module>diagnostics</module>
+        <module>database</module>
     </modules>
 
     <properties>
