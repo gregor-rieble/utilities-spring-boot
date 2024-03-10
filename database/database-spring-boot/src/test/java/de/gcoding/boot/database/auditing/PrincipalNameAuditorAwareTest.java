@@ -1,4 +1,4 @@
-package de.gcoding.boot.database;
+package de.gcoding.boot.database.auditing;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,12 +10,12 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PrincipalIdAuditorAwareTest {
-    PrincipalIdAuditorAware principalIdAuditorAware = new PrincipalIdAuditorAware();
+class PrincipalNameAuditorAwareTest {
+    PrincipalNameAuditorAware principalNameAuditorAware = new PrincipalNameAuditorAware();
 
     @Test
     void defaultSystemAuditorIsZeroUUID() {
-        final var auditor = principalIdAuditorAware.getCurrentAuditor();
+        final var auditor = principalNameAuditorAware.getCurrentAuditor();
 
         assertThat(auditor)
             .isPresent()
@@ -24,10 +24,10 @@ class PrincipalIdAuditorAwareTest {
 
     @Test
     void whenNoAuditorIsPresentReturnSystemAuditor() {
-        final var auditor = principalIdAuditorAware.getCurrentAuditor();
+        final var auditor = principalNameAuditorAware.getCurrentAuditor();
 
         assertThat(auditor)
-            .map(principalIdAuditorAware::isSystemAuditor)
+            .map(principalNameAuditorAware::isSystemAuditor)
             .isPresent()
             .hasValue(true);
     }
@@ -35,10 +35,10 @@ class PrincipalIdAuditorAwareTest {
     @Test
     void whenAuditorIsPresentIsSystemAuditorReturnsFalse() {
         withPrincipal("user-principal", () -> {
-            final var auditor = principalIdAuditorAware.getCurrentAuditor();
+            final var auditor = principalNameAuditorAware.getCurrentAuditor();
 
             assertThat(auditor)
-                .map(principalIdAuditorAware::isSystemAuditor)
+                .map(principalNameAuditorAware::isSystemAuditor)
                 .isPresent()
                 .hasValue(false);
         });
@@ -48,7 +48,7 @@ class PrincipalIdAuditorAwareTest {
     @ValueSource(strings = {"user", "admin", "manager"})
     void principalNameIsUsedWhenSecurityContextIsPresent(String principal) {
         withPrincipal(principal, () -> {
-            final var auditor = principalIdAuditorAware.getCurrentAuditor();
+            final var auditor = principalNameAuditorAware.getCurrentAuditor();
 
             assertThat(auditor).hasValue(principal);
         });
@@ -57,12 +57,12 @@ class PrincipalIdAuditorAwareTest {
     @ParameterizedTest
     @ValueSource(strings = {"user", "admin", "manager"})
     void useCustomDefaultSystemPrincipal(String principal) {
-        principalIdAuditorAware = new PrincipalIdAuditorAware(principal);
-        final var auditor = principalIdAuditorAware.getCurrentAuditor();
+        principalNameAuditorAware = new PrincipalNameAuditorAware(principal);
+        final var auditor = principalNameAuditorAware.getCurrentAuditor();
 
         assertThat(auditor)
             .hasValue(principal)
-            .map(principalIdAuditorAware::isSystemAuditor)
+            .map(principalNameAuditorAware::isSystemAuditor)
             .isPresent()
             .hasValue(true);
     }

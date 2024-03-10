@@ -1,7 +1,7 @@
-package de.gcoding.boot.database;
+package de.gcoding.boot.database.auditing;
 
 import de.gcoding.boot.common.ThrowingRunnable;
-import de.gcoding.boot.database.EntityAuditingIT.DatabaseITConfiguration;
+import de.gcoding.boot.database.auditing.EntityAuditingIT.DatabaseITConfiguration;
 import de.gcoding.boot.database.model.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +29,7 @@ import java.time.ZoneId;
 import java.util.Set;
 import java.util.UUID;
 
-import static de.gcoding.boot.database.PrincipalIdAuditorAware.DEFAULT_SYSTEM_AUDITOR;
+import static de.gcoding.boot.database.auditing.FixedNameAuditorAware.DEFAULT_SYSTEM_AUDITOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = DatabaseITConfiguration.class)
@@ -240,7 +240,7 @@ class EntityAuditingIT {
     public static class DatabaseITConfiguration {
         @Bean
         public AuditorAware<String> principalIdAuditorAware() {
-            return new PrincipalIdAuditorAware();
+            return new PrincipalNameAuditorAware();
         }
 
         @Bean

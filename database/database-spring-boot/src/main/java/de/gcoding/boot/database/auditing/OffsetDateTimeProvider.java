@@ -1,4 +1,4 @@
-package de.gcoding.boot.database;
+package de.gcoding.boot.database.auditing;
 
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.lang.NonNull;

@@ -1,4 +1,4 @@
-package de.gcoding.boot.database;
+package de.gcoding.boot.database.auditing;
 
 import org.junit.jupiter.api.Test;
 

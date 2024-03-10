@@ -1,4 +1,4 @@
-package de.gcoding.boot.database;
+package de.gcoding.boot.database.auditing;
 
 import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.AuditorAware;
@@ -9,7 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
+
+import static de.gcoding.boot.database.auditing.FixedNameAuditorAware.DEFAULT_SYSTEM_AUDITOR;
 
 /**
  * Uses springs {@link SecurityContextHolder} in order to get the principal present in the current security context.
@@ -17,28 +18,28 @@ import java.util.UUID;
  * is present in the security context, this implementation will return the default auditor instead of an empty optional.
  * If not customized through the constructor, the default auditor is {@code 00000000-0000-0000-0000-000000000000}
  */
-public class PrincipalIdAuditorAware implements AuditorAware<String> {
-    public static final String DEFAULT_SYSTEM_AUDITOR = new UUID(0L, 0L).toString();
+public class PrincipalNameAuditorAware implements AuditorAware<String> {
 
     private final String systemAuditor;
 
     /**
-     * Creates a new {@link PrincipalIdAuditorAware} using {@code 00000000-0000-0000-0000-000000000000} for the
+     * Creates a new {@link PrincipalNameAuditorAware} using {@code 00000000-0000-0000-0000-000000000000} for the
      * default auditor in case no principal is present in the security context
      */
-    public PrincipalIdAuditorAware() {
+    public PrincipalNameAuditorAware() {
         this(DEFAULT_SYSTEM_AUDITOR);
     }
 
     /**
-     * Creates a new {@link PrincipalIdAuditorAware} using the given {@code systemAuditor} for the
+     * Creates a new {@link PrincipalNameAuditorAware} using the given {@code systemAuditor} for the
      * default auditor in case no principal is present in the security context
      *
      * @param systemAuditor The value for the default auditor that will be returned in case there is no
      *                      principal within the current security context
      */
-    public PrincipalIdAuditorAware(@NonNull String systemAuditor) {
+    public PrincipalNameAuditorAware(@NonNull String systemAuditor) {
         this.systemAuditor = Objects.requireNonNull(systemAuditor, "systemAuditor must not be null");
+
     }
 
     /**
