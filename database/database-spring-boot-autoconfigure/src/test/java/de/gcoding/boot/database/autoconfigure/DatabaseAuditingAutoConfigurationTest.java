@@ -20,11 +20,15 @@ import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
 import java.util.Optional;
 
 import static de.gcoding.boot.database.autoconfigure.DatabaseAuditingAutoConfiguration.AUDITOR_AWARE_BEAN_NAME;
 import static de.gcoding.boot.database.autoconfigure.DatabaseAuditingAutoConfiguration.DATE_TIME_PROVIDER_BEAN_NAME;
+import static de.gcoding.boot.database.autoconfigure.DatabaseAuditingAutoConfiguration.DATE_TIME_PROVIDER_CLOCK_BEAN_NAME;
 import static de.gcoding.boot.database.autoconfigure.DatabaseAuditingAutoConfiguration.SPRING_JPA_AUDITING_HANDLER_BEAN_NAME;
 import static de.gcoding.boot.database.autoconfigure.DatabaseAuditingProperties.PROPERTIES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -121,6 +125,19 @@ class DatabaseAuditingAutoConfigurationTest {
                 .hasSingleBean(DateTimeProvider.class)
                 .getBean(DATE_TIME_PROVIDER_BEAN_NAME, DateTimeProvider.class)
                 .isInstanceOf(TestDateTimeProvider.class));
+    }
+
+    @Test
+    void offsetDateTimeProviderUsesClockIfAClockBeanWithSpecificNameIsPresent() {
+        when(entityManagerFactory.getMetamodel()).thenReturn(metamodel);
+        final var fixedClock = Clock.fixed(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+
+        contextRunner
+            .withBean(DATE_TIME_PROVIDER_CLOCK_BEAN_NAME, Clock.class, () -> fixedClock)
+            .run(context -> assertThat(context)
+                .getBean(DateTimeProvider.class)
+                .extracting("clock")
+                .isSameAs(fixedClock));
     }
 
     @Test
