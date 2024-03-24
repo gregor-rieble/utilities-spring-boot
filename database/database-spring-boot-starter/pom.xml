@@ -6,7 +6,7 @@
     <parent>
         <groupId>de.gcoding.boot</groupId>
         <artifactId>database</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>database-spring-boot-starter</artifactId>

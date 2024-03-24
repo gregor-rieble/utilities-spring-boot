@@ -17,7 +17,7 @@ To opt-in for all of the additional starters and features, add the following dep
 <dependency>
     <groupId>de.gcoding.boot</groupId>
     <artifactId>utilities-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
