@@ -2,8 +2,9 @@ package de.gcoding.boot.database.expressions.matchagainst;
 
 import org.hibernate.QueryException;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
+import org.hibernate.dialect.SpannerDialect;
+import org.hibernate.query.ReturnableType;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
 import org.hibernate.sql.ast.SqlAstWalker;
 import org.hibernate.sql.ast.spi.SqlAppender;
@@ -62,7 +63,7 @@ class LikeMatchAgainstTest {
     void whenRenderedQueryWillBeTranslatedToLikeWithLowerCasedValues() {
         givenADialectThatDoesNotSupportCaseInsensitiveLike();
 
-        likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), null);
+        likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), (ReturnableType<?>) null, null);
 
         assertThat(mockSqlAppender).hasToString("(lower(field) like lower(%pattern%))");
     }
@@ -74,6 +75,7 @@ class LikeMatchAgainstTest {
         likeMatchAgainst.render(
             mockSqlAppender,
             createArguments("%pattern%", "field1", "field2"),
+            (ReturnableType<?>) null,
             null
         );
 
@@ -88,6 +90,7 @@ class LikeMatchAgainstTest {
         likeMatchAgainst.render(
             mockSqlAppender,
             createArguments("%pattern%", "field1", "field2", "field3"),
+            (ReturnableType<?>) null,
             null
         );
 
@@ -99,7 +102,7 @@ class LikeMatchAgainstTest {
     void whenRenderedWithDialectThatSupportsCaseInsensitiveLikeItIsUsedWithoutLowerCaseFunctionInTranslation() {
         final var caseInsensitiveLike = givenADialectThatSupportsCaseInsensitiveLike();
 
-        likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), null);
+        likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), (ReturnableType<?>) null, null);
 
         assertThat(mockSqlAppender).hasToString("(field " + caseInsensitiveLike + " %pattern%)");
     }
@@ -127,7 +130,7 @@ class LikeMatchAgainstTest {
     }
 
     private void givenADialectThatDoesNotSupportCaseInsensitiveLike() {
-        givenTheActiveDialect(H2Dialect.class);
+        givenTheActiveDialect(SpannerDialect.class);
     }
 
     private void givenTheActiveDialect(Class<? extends Dialect> dialectType) {

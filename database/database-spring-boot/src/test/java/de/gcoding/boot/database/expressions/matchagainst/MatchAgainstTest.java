@@ -1,6 +1,7 @@
 package de.gcoding.boot.database.expressions.matchagainst;
 
 import org.hibernate.boot.model.FunctionContributions;
+import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MySQLDialect;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
 class MatchAgainstTest {
     @Mock
     @SuppressWarnings("unused")
-    ServiceRegistry serviceRegistry;
+    StandardServiceRegistryImpl serviceRegistry;
     @Mock
     TypeConfiguration typeConfiguration;
     @Mock

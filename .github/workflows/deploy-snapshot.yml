@@ -20,14 +20,14 @@ jobs:
           distribution: 'temurin'
           cache: maven
           server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_CENTRAL_TOKEN
+          server-username: MAVEN_OSSRH_USERNAME
+          server-password: MAVEN_OSSRH_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish to Apache Maven Central
         run: mvn -B deploy -P release
         env:
-          MAVEN_USERNAME: gregor.rieble
-          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_OSSRH_USERNAME: ${{ secrets.MAVEN_OSSRH_USERNAME }}
+          MAVEN_OSSRH_PASSWORD: ${{ secrets.MAVEN_OSSRH_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

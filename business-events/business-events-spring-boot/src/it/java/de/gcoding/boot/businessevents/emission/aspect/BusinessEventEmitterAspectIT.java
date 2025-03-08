@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -23,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.annotation.Order;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -43,8 +43,8 @@ public class BusinessEventEmitterAspectIT {
 
     @SpringBootTest(classes = {EmitBusinessEventTestConfiguration.class})
     @EnableAspectJAutoProxy(proxyTargetClass = true)
-    public static abstract class BaseEmitBusinessEventTest {
-        @SpyBean
+    public abstract static class BaseEmitBusinessEventTest {
+        @MockitoSpyBean
         ServiceWithAnnotatedMethod eventEmittingService;
         @Autowired
         ConfigurableApplicationContext applicationContext;
@@ -75,9 +75,7 @@ public class BusinessEventEmitterAspectIT {
         }
 
         private AutoCloseable interceptABusinessEventListenerInvocation(Runnable runnable) {
-            final ApplicationListener<BusinessEvent> listener = event -> {
-                runnable.run();
-            };
+            final ApplicationListener<BusinessEvent> listener = event -> runnable.run();
             applicationContext.addApplicationListener(listener);
 
             return () -> applicationContext.removeApplicationListener(listener);
