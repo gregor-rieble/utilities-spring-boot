@@ -7,9 +7,6 @@ import org.hibernate.type.StandardBasicTypes;
 public class MatchAgainst implements FunctionContributor {
     public static final String FUNCTION_NAME = "match_against";
 
-    MatchAgainst() {
-    }
-
     @Override
     public void contributeFunctions(FunctionContributions functionContributions) {
         final var dialect = functionContributions.getDialect();

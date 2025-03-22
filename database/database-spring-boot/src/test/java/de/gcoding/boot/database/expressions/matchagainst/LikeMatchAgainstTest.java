@@ -65,7 +65,7 @@ class LikeMatchAgainstTest {
 
         likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), (ReturnableType<?>) null, null);
 
-        assertThat(mockSqlAppender).hasToString("(lower(field) like lower(%pattern%))");
+        assertThat(mockSqlAppender).hasToString("(lower(field) like lower(%pattern%) escape '\\')");
     }
 
     @Test
@@ -80,7 +80,7 @@ class LikeMatchAgainstTest {
         );
 
         assertThat(mockSqlAppender)
-            .hasToString("(lower(field1) like lower(%pattern%) or lower(field2) like lower(%pattern%))");
+            .hasToString("(lower(field1) like lower(%pattern%) escape '\\' or lower(field2) like lower(%pattern%) escape '\\')");
     }
 
     @Test
@@ -95,7 +95,7 @@ class LikeMatchAgainstTest {
         );
 
         assertThat(mockSqlAppender)
-            .hasToString("(lower(field1) like lower(%pattern%) or lower(field2) like lower(%pattern%) or lower(field3) like lower(%pattern%))");
+            .hasToString("(lower(field1) like lower(%pattern%) escape '\\' or lower(field2) like lower(%pattern%) escape '\\' or lower(field3) like lower(%pattern%) escape '\\')");
     }
 
     @Test
@@ -104,7 +104,7 @@ class LikeMatchAgainstTest {
 
         likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), (ReturnableType<?>) null, null);
 
-        assertThat(mockSqlAppender).hasToString("(field " + caseInsensitiveLike + " %pattern%)");
+        assertThat(mockSqlAppender).hasToString("(field " + caseInsensitiveLike + " %pattern% escape '\\')");
     }
 
     private LinkedList<SqmTypedNode<?>> createArgumentTypes(int numArguments) {

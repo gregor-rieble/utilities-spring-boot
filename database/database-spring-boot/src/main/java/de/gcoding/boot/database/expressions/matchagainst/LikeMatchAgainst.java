@@ -42,23 +42,26 @@ public class LikeMatchAgainst extends AbstractMatchAgainstDescriptor {
 
     private void renderCaseInsensitiveLike(SqlAppender sqlAppender, SqlAstTranslator<?> walker, SqlAstNode field, SqlAstNode pattern) {
         field.accept(walker);
-        sqlAppender.appendSql(" " + dialect.getCaseInsensitiveLike() + " ");
+        sqlAppender.appendSql(' ');
+        sqlAppender.appendSql(dialect.getCaseInsensitiveLike());
+        sqlAppender.appendSql(' ');
         pattern.accept(walker);
+        sqlAppender.appendSql(" escape '\\'");
     }
 
     private void renderCaseSensitiveLike(SqlAppender sqlAppender, SqlAstTranslator<?> walker, SqlAstNode field, SqlAstNode pattern) {
         final var lower = dialect.getLowercaseFunction();
 
         sqlAppender.appendSql(lower);
-        sqlAppender.appendSql("(");
+        sqlAppender.appendSql('(');
         field.accept(walker);
-        sqlAppender.appendSql(")");
+        sqlAppender.appendSql(')');
 
         sqlAppender.appendSql(" like ");
 
         sqlAppender.appendSql(lower);
-        sqlAppender.appendSql("(");
+        sqlAppender.appendSql('(');
         pattern.accept(walker);
-        sqlAppender.appendSql(")");
+        sqlAppender.appendSql(") escape '\\'");
     }
 }
