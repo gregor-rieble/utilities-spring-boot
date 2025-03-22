@@ -26,7 +26,7 @@ Include the starter project in one of your spring boot applications to get start
 <dependency>
     <groupId>de.gcoding.boot</groupId>
     <artifactId>diagnostics-spring-boot-starter</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
