@@ -4,13 +4,12 @@ import org.hibernate.QueryException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SpannerDialect;
-import org.hibernate.query.ReturnableType;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
 import org.hibernate.sql.ast.SqlAstWalker;
 import org.hibernate.sql.ast.spi.SqlAppender;
 import org.hibernate.sql.ast.tree.SqlAstNode;
 import org.hibernate.type.BasicType;
-import org.hibernate.type.spi.TypeConfiguration;
+import org.hibernate.type.BindingContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +32,7 @@ class LikeMatchAgainstTest {
     @Mock
     BasicType<Boolean> returnType;
     @Mock
-    TypeConfiguration typeConfiguration;
+    BindingContext bindingContext;
     Dialect dialect;
     MockSqlAppender mockSqlAppender;
     LikeMatchAgainst likeMatchAgainst;
@@ -53,7 +52,7 @@ class LikeMatchAgainstTest {
 
         final var exception = assertThrows(
             QueryException.class,
-            () -> validator.validate(argumentTypes, MatchAgainst.FUNCTION_NAME, typeConfiguration)
+            () -> validator.validate(argumentTypes, MatchAgainst.FUNCTION_NAME, bindingContext)
         );
 
         assertThat(exception).hasMessageContaining("requires at least 2 arguments");
@@ -63,7 +62,7 @@ class LikeMatchAgainstTest {
     void whenRenderedQueryWillBeTranslatedToLikeWithLowerCasedValues() {
         givenADialectThatDoesNotSupportCaseInsensitiveLike();
 
-        likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), (ReturnableType<?>) null, null);
+        likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), null, null);
 
         assertThat(mockSqlAppender).hasToString("(lower(field) like lower(%pattern%) escape '\\')");
     }
@@ -75,7 +74,7 @@ class LikeMatchAgainstTest {
         likeMatchAgainst.render(
             mockSqlAppender,
             createArguments("%pattern%", "field1", "field2"),
-            (ReturnableType<?>) null,
+            null,
             null
         );
 
@@ -90,7 +89,7 @@ class LikeMatchAgainstTest {
         likeMatchAgainst.render(
             mockSqlAppender,
             createArguments("%pattern%", "field1", "field2", "field3"),
-            (ReturnableType<?>) null,
+            null,
             null
         );
 
@@ -102,7 +101,7 @@ class LikeMatchAgainstTest {
     void whenRenderedWithDialectThatSupportsCaseInsensitiveLikeItIsUsedWithoutLowerCaseFunctionInTranslation() {
         final var caseInsensitiveLike = givenADialectThatSupportsCaseInsensitiveLike();
 
-        likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), (ReturnableType<?>) null, null);
+        likeMatchAgainst.render(mockSqlAppender, createArguments("%pattern%", "field"), null, null);
 
         assertThat(mockSqlAppender).hasToString("(field " + caseInsensitiveLike + " %pattern% escape '\\')");
     }

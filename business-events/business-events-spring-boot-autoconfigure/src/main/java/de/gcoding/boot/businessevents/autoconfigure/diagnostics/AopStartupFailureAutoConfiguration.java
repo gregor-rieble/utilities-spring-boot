@@ -71,7 +71,7 @@ public class AopStartupFailureAutoConfiguration {
             throw new DiagnosableException(
                 withDescription(AOP_NOT_ON_CLASSPATH_MESSAGE)
                     .andSuggestedActions()
-                        .of("Add org.springframework.boot:spring-boot-starter-aop to your dependencies")
+                        .of("Add org.springframework.boot:spring-boot-starter-aspectj to your dependencies")
                         .of("Add org.springframework:spring-aop to your dependencies and use the @EnableAspectJAutoProxy " +
                             "on one of your configuration classes")
                         .build());

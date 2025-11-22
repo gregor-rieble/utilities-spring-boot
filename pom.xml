@@ -52,10 +52,10 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot.version>3.5.8</spring-boot.version>
+        <spring-boot.version>4.0.0</spring-boot.version>
 
-        <hibernate.version>6.6.36.Final</hibernate.version>
-        <mockito.version>5.17.0</mockito.version>
+        <hibernate.version>7.1.8.Final</hibernate.version>
+        <mockito.version>5.20.0</mockito.version>
 
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
