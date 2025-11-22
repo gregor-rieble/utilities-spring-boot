@@ -11,6 +11,9 @@
 
     <artifactId>database</artifactId>
     <packaging>pom</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+
     <modules>
         <module>database-spring-boot</module>
         <module>database-spring-boot-autoconfigure</module>

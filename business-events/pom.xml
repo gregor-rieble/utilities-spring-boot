@@ -12,6 +12,8 @@
     <artifactId>business-events</artifactId>
     <packaging>pom</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+
     <modules>
         <module>business-events-spring-boot-starter</module>
         <module>business-events-spring-boot</module>
