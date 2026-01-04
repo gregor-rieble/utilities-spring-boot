@@ -38,7 +38,7 @@ Include the starter project in one of your spring boot applications to get start
 <dependency>
     <groupId>de.gcoding.boot</groupId>
     <artifactId>business-events-spring-boot-starter</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
