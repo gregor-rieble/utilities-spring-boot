@@ -3,9 +3,9 @@ package de.gcoding.boot.businessevents.emission;
 import de.gcoding.boot.businessevents.BusinessEvent;
 import de.gcoding.boot.businessevents.emission.aspect.EmitBusinessEvent;
 import de.gcoding.boot.businessevents.emission.unwrapper.EventPayloadUnwrapper;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -16,22 +16,22 @@ public class BusinessEventsFactoryImpl implements BusinessEventsFactory {
     private final EventPayloadUnwrapper eventPayloadUnwrapper;
     private final BusinessEventFactory businessEventFactory;
 
-    public BusinessEventsFactoryImpl(@NonNull EventPayloadUnwrapper eventPayloadUnwrapper, @NonNull BusinessEventFactory businessEventFactory) {
+    public BusinessEventsFactoryImpl(@Nonnull EventPayloadUnwrapper eventPayloadUnwrapper, @Nonnull BusinessEventFactory businessEventFactory) {
         this.eventPayloadUnwrapper = requireNonNull(eventPayloadUnwrapper);
         this.businessEventFactory = requireNonNull(businessEventFactory);
     }
 
     @Override
-    @NonNull
+    @Nonnull
     public List<BusinessEvent> createBusinessEvents(
         @Nullable Object payload,
-        @NonNull Object emittingSource,
-        @NonNull MethodSignature methodSignature,
-        @NonNull EmitBusinessEvent configuration
+        @Nonnull Object emittingSource,
+        @Nonnull MethodSignature methodSignature,
+        @Nonnull EmitBusinessEvent configuration
     ) {
         if (payload != null) {
             return unwrapEventPayloads(payload, emittingSource, methodSignature, configuration)
-                .map(singlePayload -> businessEventFactory.createBusinessEvent(singlePayload, emittingSource, methodSignature, configuration))
+                .map(singlePayload -> businessEventFactory.createBusinessEvent(singlePayload, payload, emittingSource, methodSignature, configuration))
                 .toList();
         }
 

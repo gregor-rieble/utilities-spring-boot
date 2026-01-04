@@ -40,13 +40,13 @@ class BusinessEventFactoryImplTest {
 
     @Test
     void whenBusinessEventIsCreatedItIsAnInstanceOfSpringBusinessEvent() {
-        final var event = (BusinessEvent) businessEventFactory.createBusinessEvent("payload", this, methodSignature, configuration);
+        final var event = businessEventFactory.createBusinessEvent("payload", this, methodSignature, configuration);
         assertThat(event).isInstanceOf(BusinessEvent.class);
     }
 
     @Test
     void whenSourceIsPassedItIsUsedInEvent() {
-        final var event = (BusinessEvent) businessEventFactory.createBusinessEvent("payload", this, methodSignature, configuration);
+        final var event = businessEventFactory.createBusinessEvent("payload", this, methodSignature, configuration);
         assertThat(event.getSource()).isEqualTo(this);
     }
 
@@ -140,6 +140,22 @@ class BusinessEventFactoryImplTest {
 
         final var event = businessEventFactory.createBusinessEvent("payload", this, methodSignature, configuration);
         assertThat(event.getAction()).isEqualTo("mockBeanValue");
+    }
+
+    @Test
+    void givenANonUnwrappedPayloadWhenActionSpELIsEvaluatedWrappedPayloadIsEqualToPayload() {
+        when(configuration.actionSpEL()).thenReturn("wrappedPayload == 'payload'");
+
+        final var event = businessEventFactory.createBusinessEvent("payload", "payload", this, methodSignature, configuration);
+        assertThat(event.getAction()).isEqualTo("true");
+    }
+
+    @Test
+    void givenAnUnwrappedPayloadWhenActionSpELIsEvaluatedWrappedPayloadIsNotEqualToPayload() {
+        when(configuration.actionSpEL()).thenReturn("payload == 'payload' && wrappedPayload == 'wrappedPayload'");
+
+        final var event = businessEventFactory.createBusinessEvent("payload", "wrappedPayload", this, methodSignature, configuration);
+        assertThat(event.getAction()).isEqualTo("true");
     }
 
     public record PayloadWithDynamicAction(String action) {

@@ -4,12 +4,12 @@ package de.gcoding.boot.businessevents.emission;
 import de.gcoding.boot.businessevents.BusinessEvent;
 import de.gcoding.boot.businessevents.EventActions;
 import de.gcoding.boot.businessevents.emission.aspect.EmitBusinessEvent;
+import jakarta.annotation.Nonnull;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.expression.BeanResolver;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
@@ -23,19 +23,20 @@ public class BusinessEventFactoryImpl implements BusinessEventFactory {
     private final SpelExpressionParser parser;
     private final BeanResolver beanResolver;
 
-    public BusinessEventFactoryImpl(@NonNull SpelExpressionParser parser, @NonNull BeanResolver beanResolver) {
+    public BusinessEventFactoryImpl(@Nonnull SpelExpressionParser parser, @Nonnull BeanResolver beanResolver) {
         this.parser = requireNonNull(parser, "parser must not be null");
         this.beanResolver = requireNonNull(beanResolver, "beanResolver must not be null");
     }
 
     @Override
-    public @NonNull BusinessEvent createBusinessEvent(
-        @NonNull Object payload,
-        @NonNull Object emittingSource,
-        @NonNull MethodSignature methodSignature,
-        @NonNull EmitBusinessEvent configuration
+    public @Nonnull BusinessEvent createBusinessEvent(
+        @Nonnull Object payload,
+        @Nonnull Object wrappedPayload,
+        @Nonnull Object emittingSource,
+        @Nonnull MethodSignature methodSignature,
+        @Nonnull EmitBusinessEvent configuration
     ) {
-        final var actionResolver = new ActionEvaluator(payload, emittingSource, methodSignature, configuration);
+        final var actionResolver = new ActionEvaluator(payload, wrappedPayload, emittingSource, methodSignature, configuration);
         final var action = actionResolver.resolveAction();
 
         return BusinessEvent.withPayload(payload)
@@ -45,12 +46,14 @@ public class BusinessEventFactoryImpl implements BusinessEventFactory {
 
     private class ActionEvaluator {
         private final Object payload;
+        private final Object wrappedPayload;
         private final Object emittingSource;
         private final MethodSignature methodSignature;
         private final EmitBusinessEvent configuration;
 
-        private ActionEvaluator(Object payload, Object emittingSource, MethodSignature methodSignature, EmitBusinessEvent configuration) {
+        private ActionEvaluator(Object payload, Object wrappedPayload, Object emittingSource, MethodSignature methodSignature, EmitBusinessEvent configuration) {
             this.payload = payload;
+            this.wrappedPayload = wrappedPayload;
             this.emittingSource = emittingSource;
             this.methodSignature = methodSignature;
             this.configuration = configuration;
@@ -92,12 +95,13 @@ public class BusinessEventFactoryImpl implements BusinessEventFactory {
         }
 
         private ActionEvaluationRoot asActionEvaluationRoot() {
-            return new ActionEvaluationRoot(payload, emittingSource, methodSignature, configuration);
+            return new ActionEvaluationRoot(payload, wrappedPayload, emittingSource, methodSignature, configuration);
         }
     }
 
     private record ActionEvaluationRoot(
         Object payload,
+        Object wrappedPayload,
         Object emittingSource,
         MethodSignature methodSignature,
         EmitBusinessEvent configuration

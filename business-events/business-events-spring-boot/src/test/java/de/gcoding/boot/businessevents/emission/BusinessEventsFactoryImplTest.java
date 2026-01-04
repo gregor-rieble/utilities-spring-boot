@@ -4,6 +4,7 @@ package de.gcoding.boot.businessevents.emission;
 import de.gcoding.boot.businessevents.BusinessEvent;
 import de.gcoding.boot.businessevents.emission.aspect.EmitBusinessEvent;
 import de.gcoding.boot.businessevents.emission.unwrapper.EventPayloadUnwrapper;
+import jakarta.annotation.Nonnull;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.lang.NonNull;
 
 import java.util.Optional;
 import java.util.Set;
@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BusinessEventsFactoryImplTest {
     static final String STRING_PAYLOAD = "payload";
+    static final Optional<String> WRAPPED_STRING_PAYLOAD = Optional.of(STRING_PAYLOAD);
     @Mock
     MethodSignature methodSignature;
     @Mock
@@ -72,9 +73,27 @@ class BusinessEventsFactoryImplTest {
         assertThat(events).isEmpty();
     }
 
+    @Test
+    void whenPayloadInNotUnwrappedBusinessEventFactoryIsCalledWithPayloadForWrappedAndNonWrappedPayloadParameters() {
+        when(eventPayloadUnwrapper.unwrap(STRING_PAYLOAD, this, methodSignature, configuration)).thenReturn(Optional.empty());
+
+        businessEventsFactory.createBusinessEvents(STRING_PAYLOAD, this, methodSignature, configuration);
+
+        verify(businessEventFactory).createBusinessEvent(STRING_PAYLOAD, STRING_PAYLOAD, this, methodSignature, configuration);
+    }
+
+    @Test
+    void whenPayloadInUnwrappedBusinessEventFactoryIsCalledWithOriginalPayloadForWrappedPayloadAndUnwrappedPayloadForUnwrappedPayloadParameters() {
+        when(eventPayloadUnwrapper.unwrap(WRAPPED_STRING_PAYLOAD, this, methodSignature, configuration)).thenReturn(Optional.of(Stream.of(STRING_PAYLOAD)));
+
+        businessEventsFactory.createBusinessEvents(WRAPPED_STRING_PAYLOAD, this, methodSignature, configuration);
+
+        verify(businessEventFactory).createBusinessEvent(STRING_PAYLOAD, WRAPPED_STRING_PAYLOAD, this, methodSignature, configuration);
+    }
+
     protected static class MockBusinessEventFactory implements BusinessEventFactory {
         @Override
-        public @NonNull BusinessEvent createBusinessEvent(@NonNull Object payload, @NonNull Object emittingSource, @NonNull MethodSignature methodSignature, @NonNull EmitBusinessEvent configuration) {
+        public @Nonnull BusinessEvent createBusinessEvent(@Nonnull Object payload, @Nonnull Object wrappedPayload, @Nonnull Object emittingSource, @Nonnull MethodSignature methodSignature, @Nonnull EmitBusinessEvent configuration) {
             return BusinessEvent.withPayload(payload).build();
         }
     }

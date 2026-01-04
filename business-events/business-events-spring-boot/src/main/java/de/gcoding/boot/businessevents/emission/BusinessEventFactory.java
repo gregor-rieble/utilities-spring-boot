@@ -8,8 +8,19 @@ import org.aspectj.lang.reflect.MethodSignature;
 @FunctionalInterface
 public interface BusinessEventFactory {
     @Nonnull
+    default BusinessEvent createBusinessEvent(
+        @Nonnull Object payload,
+        @Nonnull Object emittingSource,
+        @Nonnull MethodSignature methodSignature,
+        @Nonnull EmitBusinessEvent configuration
+    ) {
+        return createBusinessEvent(payload, payload, emittingSource, methodSignature, configuration);
+    }
+
+    @Nonnull
     BusinessEvent createBusinessEvent(
         @Nonnull Object payload,
+        @Nonnull Object wrappedPayload,
         @Nonnull Object emittingSource,
         @Nonnull MethodSignature methodSignature,
         @Nonnull EmitBusinessEvent configuration
